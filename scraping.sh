@@ -1,6 +1,6 @@
 #!/bin/bash
 ## declare an array variable
-declare -a arr=('Schloss Münster' 'Prinzipalmarkt Münster' 'kiepenkerl denkmal münster' 'St. Paulus Dom Münster' 'LWL-Museum für kunst und kultur münster' 'Erbdrostenhof münster' 'Sankt Lamberti Münster')
+declare -a arr=('Antiquariat Münster' 'Cavete Münster' 'Provinzial Münster' 'Rathaus Münster' 'Aaseekugeln Münster')
 
 ## now loop through the above array
 for i in "${arr[@]}"
