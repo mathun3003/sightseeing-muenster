@@ -1,24 +1,54 @@
 # -*- coding: utf-8 -*-
 import json
+import logging
 import os
-import string
+import sys
 import warnings
 from typing import Dict
 
 import numpy as np
 import pandas as pd
+import requests
 import streamlit as st
+import streamlit_toggle as tog
 import tensorflow as tf
 from PIL import Image
 
 from model import EfficientNetB7
 
-# TODO: show class probabilities per prediction in sidebar
-
-
 # suppress future and deprecation warnings
 warnings.simplefilter(action="ignore", category=DeprecationWarning)
 warnings.simplefilter(action="ignore", category=FutureWarning)
+
+# create logger instance
+log = logging.getLogger(__name__)
+# log to stdout
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+log.addHandler(handler)
+
+
+# function to download GitHub model_weights.h5 release
+@st.cache_resource()
+def download_release(url: str, file_path: str):
+    # get filename from url
+    local_filename = url.split("/")[-1]
+    # only download if file not already exists
+    if not os.path.isfile(file_path + local_filename):
+        log.info("Downloading GitHub Release {}".format(local_filename))
+        # stream download
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            # save under path
+            with open(file_path + local_filename, "wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    # If you have chunk encoded response uncomment if
+                    # and set chunk_size parameter to None.
+                    # if chunk:
+                    f.write(chunk)
+        return local_filename
 
 
 # function to load the model
@@ -38,16 +68,19 @@ def load_index_to_label_dict(path: str = "resources/labels.json"):
         legend = json.load(f)
     # swap keys and values
     legend = {int(v): k for k, v in legend.items()}
-    # make legend more readable
-    legend = {k: string.capwords(v.replace("_", " ")) for k, v in legend.items()}
+    # # make legend more readable
     return legend
 
 
 # load tourist information
 @st.cache_data()
 def load_tourist_information(path: str = "resources/tourist_information.json"):
-    # TODO
-    return ""
+    # load json file from path
+    with open(path, "r", encoding="utf-8") as f:
+        tourist_information = json.load(f)
+    # ensure integer keys
+    tourist_information = {int(k): v for k, v in tourist_information.items()}
+    return tourist_information
 
 
 # load demo_images dir
@@ -75,13 +108,8 @@ def predict_class_label(img: Image.Image, legend: Dict[int, str], _model: tf.ker
     prediction = np.argmax(class_probabilities[0])
     # get label
     label = legend[prediction]
-
-    ### display class probabilities
-    with st.sidebar:
-        st.header("Klassen-Wahrscheinlichkeiten")
-        st.write(pd.DataFrame(class_probabilities, index=["Wahrscheinlichkeit"], columns=legend.values()).transpose())
-
-    return label
+    # return label, prediction, and class probabilities
+    return label, prediction, class_probabilities
 
 
 # function to rescale input images and convert them to tensor
@@ -102,6 +130,7 @@ if __name__ == "__main__":
 
     ### get model and resources
 
+    download_release("https://github.com/mathun3003/sight_seeking/releases/download/weights/model_weights.h5", file_path="resources/")
     model = load_model()
     legend = load_index_to_label_dict()
     tourist_information = load_tourist_information()
@@ -149,20 +178,38 @@ if __name__ == "__main__":
     # rescale image for model
     imResize = rescale_and_expand_image(img)
 
-    ### predict image
+    ### predict image, store prediction and class probabilities
 
-    label = predict_class_label(imResize, legend, model)
+    label, prediction, class_probabilities = predict_class_label(imResize, legend, model)
 
     ### display prediction to user
 
     st.title("Du stehst wahrscheinlich vor dieser Sehenwürdigkeit:")
     st.header(label)
 
+    ### display class probabilities
+
+    with st.sidebar:
+        # define switch
+        switch = tog.st_toggle_switch(
+            label="Klassen-Wahrscheinlichkeiten anzeigen",
+            key="Key1",
+            default_value=False,
+            label_after="Klassen-Wahrscheinlichkeiten ausblenden",
+            inactive_color="#D3D3D3",
+            active_color="#11567f",
+            track_color="#29B5E8",
+        )
+        # if switch was turned on
+        if switch:
+            # show class probabilities
+            st.header("Klassen-Wahrscheinlichkeiten")
+            st.write(pd.DataFrame(class_probabilities, index=["Wahrscheinlichkeit"], columns=legend.values()).transpose())
+
     ### display tourist information
 
     # get the correspondig description of the sight
-    # TODO: Tourist information
-    # sight_description = tourist_information[label]
+    sight_description = tourist_information[prediction]
     # write tourist information to oage
-    # st.title("Hier sind einige Informationen zu der Sehenswürdigkeit:")
-    # st.write(sight_description)
+    st.subheader("Hier sind einige Informationen zu der Sehenswürdigkeit:")
+    st.write(sight_description)

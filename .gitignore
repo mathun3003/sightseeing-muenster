@@ -28,3 +28,6 @@ venv.bak/
 .idea/
 __pychache__/
 *.pyc
+
+# Big files
+*.h5
