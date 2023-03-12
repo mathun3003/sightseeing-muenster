@@ -1,6 +1,30 @@
-logs
-.venv
-.idea
-*.jpg
+# image directory
 data/
+
+# .gitkeep file
 .gitkeep
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+*.env
+.venv*
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Visual Studio Code
+.vscode/
+
+# pyenv
+.python-version
+
+# Cache
+.idea/
+__pychache__/
+*.pyc
