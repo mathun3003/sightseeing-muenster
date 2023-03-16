@@ -8,7 +8,6 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
-import requests
 import streamlit as st
 import streamlit_toggle as tog
 import tensorflow as tf
@@ -28,27 +27,6 @@ handler.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)
-
-
-# function to download GitHub model_weights.h5 release
-@st.cache_resource()
-def download_release(url: str, file_path: str):
-    # get filename from url
-    local_filename = url.split("/")[-1]
-    # only download if file not already exists
-    if not os.path.isfile(file_path + local_filename):
-        log.info("Downloading GitHub Release {}".format(local_filename))
-        # stream download
-        with requests.get(url, stream=True) as r:
-            r.raise_for_status()
-            # save under path
-            with open(file_path + local_filename, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    # If you have chunk encoded response uncomment if
-                    # and set chunk_size parameter to None.
-                    # if chunk:
-                    f.write(chunk)
-        return local_filename
 
 
 # function to load the model
@@ -130,7 +108,6 @@ if __name__ == "__main__":
 
     ### get model and resources
 
-    download_release("https://github.com/mathun3003/sight_seeking/releases/download/weights/model_weights.h5", file_path="resources/")
     model = load_model()
     legend = load_index_to_label_dict()
     tourist_information = load_tourist_information()

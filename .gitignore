@@ -26,5 +26,5 @@ venv.bak/
 
 # Cache
 .idea/
-__pychache__/
 *.pyc
+__pycache__
