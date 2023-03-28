@@ -115,7 +115,7 @@ if __name__ == "__main__":
     ### Streamlit page
 
     # set title
-    st.title("Willkommen zur Sight Seeking App!")
+    st.title("Willkommen zur Sightseeing Münster App!")
     st.write("Finde Informationen zu Münsteraner Sehenwürdigkeiten mit nur einem Foto!")
     # set instructions
     instructions = """
