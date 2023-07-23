@@ -1,8 +1,5 @@
 # image directory
-data/
-
-# .gitkeep file
-.gitkeep
+src/dataimgs/
 
 # Installer logs
 pip-log.txt
