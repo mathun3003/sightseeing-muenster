@@ -5,7 +5,7 @@
 
 ---
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)]()
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://sightseeingmuenster.streamlit.app/)
 
 ## Description
 
@@ -25,7 +25,7 @@ App users can either take a photo of one of the supported sights or upload a pho
 
 The app was implemented with [Streamlit](https://docs.streamlit.io/). A pre-trained EfficientNetV2S was fine-tuned using [PyTorch](https://www.pytorch.org/) on scraped images from Bing Search. The model was trained on images of various sights from Münster with a very good performance (>90% accuracy) using GPU instances from Google Colab. The tourist information is queried from the API of the [Open Data Portal Münsterland](https://www.muensterland.com/muensterland-e.v/unsere-projekte/muensterland-digital/datenportal-muensterland/), an open database containing data of numerous points of interest.
 
-The Web App is hosted on the community cloud of Streamlit and is available [here]().
+The Web App is hosted on the community cloud of Streamlit and is available [here](https://sightseeingmuenster.streamlit.app/).
 
 ## Installation
 
