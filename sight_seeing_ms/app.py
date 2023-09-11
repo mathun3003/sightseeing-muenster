@@ -4,12 +4,12 @@ from typing import get_args
 import streamlit as st
 from PIL import Image
 
-from data.get_info import DataPortalMS
-from data.response_models import TouristInformationResponse
-from models.model import EfficientNetV2S, transform
-from resources.functions import load_sight_mapping
-from utils.constants import LANGUAGES
-from utils.translation import translate
+from sight_seeing_ms.data.get_info import DataPortalMS
+from sight_seeing_ms.data.response_models import TouristInformationResponse
+from sight_seeing_ms.models.efficientnetv2s import EfficientNetV2S, transform
+from sight_seeing_ms.utils.caching_functions import load_sight_mapping
+from sight_seeing_ms.utils.constants import LANGUAGES
+from sight_seeing_ms.utils.translation import translate
 
 
 class SightseeingApp:
@@ -28,10 +28,16 @@ class SightseeingApp:
         st.title(translate("Willkommen zur Sightseeing Münster App!", lang))
         st.write(translate("Finde Informationen zu Münsteraner Sehenwürdigkeiten mit nur einem Foto!", lang))
         # display instructions
-        st.write(translate("""Du kannst entweder dein eigenes Bild hochladen, oder selbst ein Foto aufnehmen. Das von
+        st.write(
+            translate(
+                """Du kannst entweder dein eigenes Bild hochladen, oder selbst ein Foto aufnehmen. Das von
         dir hochgeladene Bild wird in Echtzeit durch das neuronale Netz geleitet und das Ergebnis wird auf dem
-        Bildschirm angezeigt.""", lang))
+        Bildschirm angezeigt.""",
+                lang,
+            )
+        )
 
+    # pylint: disable=inconsistent-return-statements
     @staticmethod
     def image_upload(lang: str) -> Image:
         """
@@ -42,9 +48,7 @@ class SightseeingApp:
         # get image from file uploader
         file_upload = st.file_uploader(translate("Lade ein Bild hoch", lang))
         # get image from camera
-        camera_photo = st.camera_input(
-            translate("... oder mache ein Foto und lade es hoch.", lang)
-        )
+        camera_photo = st.camera_input(translate("... oder mache ein Foto und lade es hoch.", lang))
         st.divider()
         # even load uploaded file or default file
         if file_upload:
@@ -79,23 +83,29 @@ class SightseeingApp:
         st.markdown(f"#### {translate('Beschreibung', lang)}:")
         st.write(tourist_information.description)
         st.markdown(f"#### {translate('Adresse', lang)}:")
-        st.write(f"""
+        st.write(
+            f"""
         {tourist_information.address.street} {tourist_information.address.house_number},
-        {tourist_information.address.postal_code} Münster""")
+        {tourist_information.address.postal_code} Münster"""
+        )
         st.markdown(f"#### {translate('Kontakt', lang)}:")
-        st.write(f"""
+        st.write(
+            f"""
                 {translate('Telefonnummer', lang)}: {tourist_information.contact_details.phone}\n
                 {translate('E - Mail', lang)}: {tourist_information.contact_details.email}\n
-                {translate('Website', lang)}: {tourist_information.contact_details.website}""")
+                {translate('Website', lang)}: {tourist_information.contact_details.website}"""
+        )
         st.markdown(f"#### {translate('Weitere Informationen', lang)}:")
-        for info in tourist_information.additional_information:
-            with st.expander(info.headline):
-                st.write(info.text)
+        if tourist_information.additional_information:
+            for info in tourist_information.additional_information:
+                with st.expander(info.headline):
+                    st.write(info.text)
 
 
-def main():
+def main() -> None:
+    """Main Function to start the streamlit app."""
     # set language
-    lang = st.sidebar.selectbox("Language", map(str.upper, get_args(LANGUAGES))).lower()
+    lang = st.sidebar.selectbox("Language", map(str.upper, get_args(LANGUAGES))).lower()  # type: ignore
 
     # load model and app resources
     model = EfficientNetV2S()
@@ -111,7 +121,7 @@ def main():
     # predict label
     label = model.predict_class_label(transformed_image)
     # get tourist information
-    tourist_information = dataportal.get_tourist_information(sight_ids.get(label))
+    tourist_information = dataportal.get_tourist_information(sight_ids[label])
     # display prediction to user
     app.sight_information(lang, tourist_information)
 

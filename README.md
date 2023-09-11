@@ -1,6 +1,5 @@
 # Sightseeing Münster App
 
-[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)  
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
 
 ---
@@ -13,7 +12,7 @@ Find information on Münster sights with just one photo!
 
 The following sights are currently supported:
 - Aasee Münster
-- St. Paulus Dom MÜnster
+- St. Paulus Dom Münster
 - Erbdrostenhof Münster
 - LWL-Museum für Kunst und Kultur Münster
 - Schloss Münster
@@ -33,19 +32,19 @@ Clone the repository and install the required packages with the following comman
 
 ```bash
 cd to/your/directory
-bash setup.sh
+poe dev-setup
 ```
-``setup.sh`` is a custom bash script that handles the installation of dependencies.
+``poe dev-setup`` is a custom poe command that handles the installation of dependencies.
 
 ## Usage
 
 To run the app, execute the following command:
 
 ```bash
-bash run_dev.sh
+poe run-dev
 ```
 
-``run_dev.sh`` is a custom bash script that handles the execution of the app and is used for development as it refreshes the page when changes occur to any files in the directory.
+``poe run-dev`` is a custom poe command that handles the execution of the app and is used for development as it refreshes the page when changes occur to any files in the directory.
 
 
 ## Deployment

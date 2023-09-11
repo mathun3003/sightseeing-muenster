@@ -1,30 +1,43 @@
 # -*- coding: utf-8 -*-
-import logging
 import os
 from typing import Optional
 
 import requests
 
-from data.response_models import SightAddress, SightContactDetails, SightText, TouristInformationResponse
-from utils.constants import SIGHT_ADDRESS, SIGHT_ADDRESS_HOUSE_NUMBER, SIGHT_ADDRESS_POSTAL_CODE, \
-    SIGHT_ADDRESS_STREET, SIGHT_CONTACT_DETAILS, SIGHT_CONTACT_DETAILS_EMAIL, SIGHT_CONTACT_DETAILS_PHONE, \
-    SIGHT_CONTACT_DETAILS_WEBSITE, SIGHT_DESCRIPTION, SIGHT_NAME
+from sight_seeing_ms.data.response_models import (
+    SightAddress,
+    SightContactDetails,
+    SightText,
+    TouristInformationResponse,
+)
+from sight_seeing_ms.utils.constants import (
+    SIGHT_ADDRESS,
+    SIGHT_ADDRESS_HOUSE_NUMBER,
+    SIGHT_ADDRESS_POSTAL_CODE,
+    SIGHT_ADDRESS_STREET,
+    SIGHT_CONTACT_DETAILS,
+    SIGHT_CONTACT_DETAILS_EMAIL,
+    SIGHT_CONTACT_DETAILS_PHONE,
+    SIGHT_CONTACT_DETAILS_WEBSITE,
+    SIGHT_DESCRIPTION,
+    SIGHT_NAME,
+)
+from sight_seeing_ms.utils.logger import CustomLogger
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-consoleHandler = logging.StreamHandler()
-
-consoleHandler.setFormatter(formatter)
-
-logger = logging.getLogger(__name__)
-logger.addHandler(consoleHandler)
+logger = CustomLogger().get_logger()
 
 
+# pylint: disable=too-few-public-methods
 class DataPortalMS:
     """
     Class to fetch data from the Data Portal Münsterland.
     """
 
-    def __init__(self, language: str):
+    def __init__(self, language: str) -> None:
+        """
+        Initialize the Data Portal Münsterland
+        :param language:
+        """
         self.language = language
         self._username = os.getenv("API_USERNAME")
         self._token = os.getenv("API_TOKEN")
@@ -62,14 +75,15 @@ class DataPortalMS:
         # get additional information translation
         if self.language != "de":
             additional_information = [
-                SightText(headline=info["all_translations_grouped"][self.language]["headline"],
-                          text=info["all_translations_grouped"][self.language]["text"])
+                SightText(
+                    headline=info["all_translations_grouped"][self.language]["headline"],
+                    text=info["all_translations_grouped"][self.language]["text"],
+                )
                 for info in tourist_information["texts"]
             ]
         else:
             additional_information = [
-                SightText(headline=info["headline"], text=info["text"])
-                for info in tourist_information["texts"]
+                SightText(headline=info["headline"], text=info["text"]) for info in tourist_information["texts"]
             ]
 
         return TouristInformationResponse(
@@ -77,10 +91,12 @@ class DataPortalMS:
             description=description,
             address=sight_address,
             contact_details=sight_contact_details,
-            additional_information=additional_information
+            additional_information=additional_information,
         )
 
-    def _fetch(self, url: str, method: str = "GET", payload: Optional[dict] = None, params: Optional[dict] = None):
+    def _fetch(
+        self, url: str, method: str = "GET", payload: Optional[dict] = None, params: Optional[dict] = None
+    ) -> dict:
         """
         Fetch data from the data portal.
         :param url: API url
@@ -89,8 +105,8 @@ class DataPortalMS:
         :param params: URL parameters. Defaults to None.
         :return: JSON response
         """
-        response = requests.request(method, url, headers=self.header, data=payload, params=params)
-        if not str(response.status_code).startswith("2"):
+        response = requests.request(method, url, headers=self.header, data=payload, params=params, timeout=60)
+        if not response.ok:
             logger.error(f"Error fetching data from {url}. Status code: {response.status_code}, {response.reason}")
             response.raise_for_status()
         return response.json()

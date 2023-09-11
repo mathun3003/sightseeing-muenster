@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
-import os
-from pathlib import Path
+from os import PathLike
 
 import streamlit as st
 
-RESOURCE_DIR = Path("src/resources")
-SIGHT_IDS_PATH = os.path.join(os.getcwd(), RESOURCE_DIR, "sight_ids.json")
+from sight_seeing_ms.utils.constants import SIGHT_IDS_PATH
 
 
 @st.cache_data()
-def load_sight_mapping(path: str = SIGHT_IDS_PATH) -> dict[str, int]:
+def load_sight_mapping(path: PathLike = SIGHT_IDS_PATH) -> dict[str, int]:
     """
     Load sight mapping from json file.
     :param path: path to json file

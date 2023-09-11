@@ -1,0 +1,136 @@
+name: CI Pipeline
+on: [push, pull_request, release]
+
+jobs:
+
+  # Dependency checking
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      - name: "🔍 Dependency Review"
+        uses: actions/dependency-review-action@v3
+
+  # CodeQL analysis
+  code-ql-analysis:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+    steps:
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      # Initializes the CodeQL tools for scanning.
+      - name: "⚙️ Initialize CodeQL"
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+      - name: "🔧 Autobuild"
+        uses: github/codeql-action/autobuild@v2
+      - name: "🔍 Perform CodeQL Analysis"
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # Typing checking
+  typing:
+    name: MyPy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+          architecture: x64
+          plugins : |
+            pydantic.mypy
+          ignore_missing_imports: true
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      - name: "📦 Install mypy"
+        run: pip install mypy
+      - name: "🔍 Run mypy"
+        uses: sasanquaneuf/mypy-github-action@releases/v1
+        with:
+          checkName: 'typing'   # NOTE: this needs to be the same as the job name
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Pep8
+  pep8:
+    name: Pep8
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: "🔍 Run PEP8"
+        uses: quentinguidee/pep8-action@v1
+        with:
+          arguments: '--max-line-length=120'
+
+  # Pylint checking
+  pylint:
+    name: Pylint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: [ "3.10", "3.11" ]
+    steps:
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      - name: "🔧 Set up Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: "📦 Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+      - name: "🔍 Lint Code"
+        run: |
+          pylint -d C0103,C0114,W1203,E0213,E1101 $(git ls-files '*.py')
+        # disable: invalid-name, missing-module-docstring, logging-fstring-interpolation, no-self-argument, no-member
+
+  # isort
+  isort:
+    name: isort
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isort/isort-action@v1
+        with:
+         profile: "black"
+         py_version: 310
+
+  # Formatting
+  black:
+    name: Black
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      - name: "🔧 Autobuild"
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+          line-length: 120
+      - name: "🔍 Run Black"
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+            black --check --verbose .

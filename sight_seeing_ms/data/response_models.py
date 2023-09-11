@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-HTML_REGEX = r"<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});"
+from sight_seeing_ms.utils.constants import HTML_REGEX
 
 
 class SightAddress(BaseModel):
@@ -18,13 +18,13 @@ class SightAddress(BaseModel):
     postal_code: Optional[str] = Field(..., description="Postal code of the sight")
 
     @field_validator("*", mode="before")
-    def replace_none_with_empty(cls, v):
+    def replace_none_with_empty(cls, value):
         """
         Replace None with empty string.
-        :param v: value to check
+        :param value: value to check
         :return: input value or empty string
         """
-        return v if v is not None else ""
+        return value if value is not None else ""
 
 
 class SightContactDetails(BaseModel):
@@ -67,10 +67,10 @@ class TouristInformationResponse(BaseModel):
     name: str = Field(..., description="Name of the sight")
     description: str = Field(..., pattern=HTML_REGEX, description="Description of the sight")
     address: SightAddress = Field(..., description="Address of the sight")
-    additional_information: Optional[list[SightText]] = Field(...,
-                                                              description="Interesting information about the sight")
-    contact_details: SightContactDetails = Field(...,
-                                                 description="Contact details of the sight's facility")
+    additional_information: Optional[list[SightText]] = Field(
+        ..., description="Interesting information about the sight"
+    )
+    contact_details: SightContactDetails = Field(..., description="Contact details of the sight's facility")
 
     @field_validator("description")
     def remove_html_tags(cls, descr: str) -> str:

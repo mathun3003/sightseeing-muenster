@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
+from os import PathLike
 
 import torch
-import torch.nn as nn
 import torchvision
 from PIL import Image
+from torch import nn
 from torchvision import transforms
 
-MODEL_SAVE_PATH = Path("src/resources/pytorch_efficientnetv2s.pth")
+from sight_seeing_ms.utils.constants import MODEL_SAVE_PATH
 
 
 class EfficientNetV2S(nn.Module):
@@ -15,7 +15,7 @@ class EfficientNetV2S(nn.Module):
     Class to create a pretrained EfficientNetV2S model with a custom classifier.
     """
 
-    def __init__(self, fan_out: int = 8, model_path: str = MODEL_SAVE_PATH):
+    def __init__(self, fan_out: int = 8, model_path: PathLike = MODEL_SAVE_PATH) -> None:
         """
         Creates a pretrained EfficientNetV2S model with a custom classifier.
         :param fan_out: Number of classes. Defaults to 8.
@@ -28,15 +28,18 @@ class EfficientNetV2S(nn.Module):
             nn.Dropout(p=0.2, inplace=True),
             nn.Linear(in_features=1280, out_features=fan_out, bias=True),
         )
-        self.checkpoint = torch.load(
-            model_path, map_location=torch.device(self._device)
-        )
+        self.checkpoint = torch.load(model_path, map_location=torch.device(self._device))
         # load model state dict and class dict
         self.model.load_state_dict(self.checkpoint["model_state_dict"])
         self.class_dict = self.checkpoint["class_to_idx"]
         self.class_dict = {v: k for k, v in self.class_dict.items()}
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Function to forward propagate an image through the model.
+        :param x: Input tensor.
+        :return: Model logits.
+        """
         return self.model(x)
 
     def predict_class_label(self, x: torch.Tensor) -> str:
@@ -57,6 +60,11 @@ class EfficientNetV2S(nn.Module):
         return label
 
     def _predict(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Function to predict the class probabilities.
+        :param x: Input tensor.
+        :return: class probabilities as tensors.
+        """
         return torch.softmax(self.forward(x), dim=1)
 
 

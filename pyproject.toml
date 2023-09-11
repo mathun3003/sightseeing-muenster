@@ -1,0 +1,142 @@
+[tool.poetry]
+name = "sight-seeing-ms"
+version = "0.1.0"
+description = "AI-powered Web App for tourists of the City of Münster."
+authors = ["Mathis <mathun3003@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+poethepoet = "^0.22.1"
+translate = "^3.6.1"
+streamlit = "^1.26.0"
+pydantic = "^2.3.0"
+torch = "^2.0.1"
+torchvision = "^0.15.2"
+poetry = {version = "^1.0", allow-prereleases = true, optional = true}
+bbid = {git = "https://github.com/ostrolucky/Bulk-Bing-Image-downloader", optional = true}
+types-requests = "^2.31.0.2"
+
+[tool.poetry.group.ci.dependencies]
+mypy = "^1.5.1"
+black = "^23.7.0"
+pylint = "^2.17.5"
+isort = "^5.12.0"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pycodestyle = "^2.11.0"
+
+[tool.poetry.extras]
+scraping = ["bbid"]
+poetry_plugin = ["poetry"]
+
+[tool.poetry.scripts]
+poe = "poethepoet:main"
+
+[tool.poetry.plugins."poetry.application.plugin"]
+poethepoet = "poethepoet.plugin:PoetryPlugin"
+
+[tool.poe.tasks]
+_clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
+
+    [tool.poe.tasks.run-dev]
+    help = "Run the app in development mode"
+    cmd = "streamlit run src/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
+
+    [tool.poe.tasks.dev-setup]
+    help = "Setup the project for development"
+    cmd = "poetry install --sync --all-extras"
+
+    [tool.poe.tasks.typing]
+    help = "Run MyPy checker on the code base"
+    cmd  = "mypy sight_seeing_ms/"
+
+    [tool.poe.tasks.pep8]
+    help = "Runs PEP8 (pycodestyle) checker on the code base"
+    cmd = "pycodestyle sight_seeing_ms/ --max-line-length=120"
+
+    [tool.poe.tasks.lint]
+    help = "Run pylint"
+    cmd  = "pylint sight_seeing_ms/"
+
+    [tool.poe.tasks.isort]
+    help = "Sort imports. This affects the code base as this makes changes to affected files."
+    cmd = "isort sight_seeing_ms/"
+
+    [tool.poe.tasks.black]
+    help = "Format code using black. This affects the code base as this makes changes to affected files."
+    cmd = "black sight_seeing_ms/"
+
+    [tool.poe.tasks.style-black]
+    help = "Validate black code style"
+    cmd  = "black sight_seeing_ms/ --check --diff"
+
+    [tool.poe.tasks.style-isort]
+    help = "Validate isort code style"
+    cmd  = "isort sight_seeing_ms/ --check --diff"
+
+    [tool.poe.tasks.style]
+    help = "Validate code style"
+    sequence = ["style-isort", "style-black", "pep8"]
+    ignore_fail = true
+
+    [tool.poe.tasks.tests]
+    help = "Run unit and feature tests"
+    cmd  = "pytest sight_seeing_ms_tests/ --cov=sight_seeing_ms -W ignore::DeprecationWarning"
+
+    [tool.poe.tasks.ci]
+    help     = "Execute all CI tasks"
+    sequence = ["typing", "lint", "style", "tests"]
+    ignore_fail = true
+
+    [tool.poe.tasks.clean]
+    help = "Remove generated files"
+    cmd  = """
+    # multiline commands including comments work too!
+    rm -rf .coverage
+           .mypy_cache
+           .pytest_cache
+           ./**/__pycache__
+           dist
+           htmlcov
+           ./docs/_build
+           ./tests/fixtures/simple_project/venv
+           ./tests/fixtures/venv_project/myvenv
+           ./tests/fixtures/poetry_plugin_project/**/.venv
+           ./tests/temp
+     """
+
+    [tool.poe.tasks.install-poetry-plugin]
+    help = "Install or update this project as a plugin in poetry"
+    sequence = [
+      { cmd = "poetry self remove poethepoet"},
+      { cmd = "poetry self add \"${POE_ROOT}[poetry_plugin]\""}
+    ]
+    ignore_fail = true
+
+[tool.isort]
+profile = "black"
+py_version = 310
+
+[tool.black]
+line-length = 120
+target-version = ["py310", "py311"]
+
+[tool.mypy]
+python_version = "3.10"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+
+[tool.pylint]
+max-line-length = 120
+disable = [
+    "C0103",  # invalid-name
+    "C0114",  # missing-module-docstring
+    "W1203",  # logging-fstring-interpolation
+    "E0213",  # no-self-argument
+    "E1101"   # no-member
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
