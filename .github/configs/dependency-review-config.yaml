@@ -1,0 +1,7 @@
+fail_on_severity: 'critical'
+allow_licenses:
+  - 'GPL-3.0'
+  - 'BSD-3-Clause'
+github:
+  base_ref: 'refs/heads/master$'
+  head_ref: 'refs/heads/.*'

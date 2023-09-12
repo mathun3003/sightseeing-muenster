@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from sight_seeing_ms.utils.constants import HTML_REGEX
+from sightseeing_ms.utils.constants import HTML_REGEX
 
 
 class SightAddress(BaseModel):

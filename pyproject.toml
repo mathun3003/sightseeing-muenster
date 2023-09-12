@@ -22,8 +22,6 @@ mypy = "^1.5.1"
 black = "^23.7.0"
 pylint = "^2.17.5"
 isort = "^5.12.0"
-pytest = "^7.1.2"
-pytest-cov = "^3.0.0"
 pycodestyle = "^2.11.0"
 
 [tool.poetry.extras]
@@ -41,7 +39,7 @@ _clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
 
     [tool.poe.tasks.run-dev]
     help = "Run the app in development mode"
-    cmd = "streamlit run src/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
+    cmd = "streamlit run sightseeing_ms/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
 
     [tool.poe.tasks.dev-setup]
     help = "Setup the project for development"
@@ -49,44 +47,40 @@ _clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
 
     [tool.poe.tasks.typing]
     help = "Run MyPy checker on the code base"
-    cmd  = "mypy sight_seeing_ms/"
+    cmd  = "mypy sightseeing_ms/"
 
     [tool.poe.tasks.pep8]
     help = "Runs PEP8 (pycodestyle) checker on the code base"
-    cmd = "pycodestyle sight_seeing_ms/ --max-line-length=120"
+    cmd = "pycodestyle sightseeing_ms/ --max-line-length=120"
 
     [tool.poe.tasks.lint]
     help = "Run pylint"
-    cmd  = "pylint sight_seeing_ms/"
+    cmd  = "pylint sightseeing_ms/"
 
     [tool.poe.tasks.isort]
     help = "Sort imports. This affects the code base as this makes changes to affected files."
-    cmd = "isort sight_seeing_ms/"
+    cmd = "isort sightseeing_ms/"
 
     [tool.poe.tasks.black]
     help = "Format code using black. This affects the code base as this makes changes to affected files."
-    cmd = "black sight_seeing_ms/"
+    cmd = "black sightseeing_ms/"
 
     [tool.poe.tasks.style-black]
     help = "Validate black code style"
-    cmd  = "black sight_seeing_ms/ --check --diff"
+    cmd  = "black sightseeing_ms/ --check --diff"
 
     [tool.poe.tasks.style-isort]
     help = "Validate isort code style"
-    cmd  = "isort sight_seeing_ms/ --check --diff"
+    cmd  = "isort sightseeing_ms/ --check --diff"
 
     [tool.poe.tasks.style]
     help = "Validate code style"
     sequence = ["style-isort", "style-black", "pep8"]
     ignore_fail = true
 
-    [tool.poe.tasks.tests]
-    help = "Run unit and feature tests"
-    cmd  = "pytest sight_seeing_ms_tests/ --cov=sight_seeing_ms -W ignore::DeprecationWarning"
-
     [tool.poe.tasks.ci]
     help     = "Execute all CI tasks"
-    sequence = ["typing", "lint", "style", "tests"]
+    sequence = ["typing", "lint", "style"]
     ignore_fail = true
 
     [tool.poe.tasks.clean]

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import re
 from typing import get_args
 
 import streamlit as st
 from translate import Translator
 
-from sight_seeing_ms.utils.constants import LANGUAGES
+from sightseeing_ms.utils.constants import LANGUAGES
 
 
 @st.cache_data()

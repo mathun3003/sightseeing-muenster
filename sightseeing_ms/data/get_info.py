@@ -4,13 +4,13 @@ from typing import Optional
 
 import requests
 
-from sight_seeing_ms.data.response_models import (
+from sightseeing_ms.data.response_models import (
     SightAddress,
     SightContactDetails,
     SightText,
     TouristInformationResponse,
 )
-from sight_seeing_ms.utils.constants import (
+from sightseeing_ms.utils.constants import (
     SIGHT_ADDRESS,
     SIGHT_ADDRESS_HOUSE_NUMBER,
     SIGHT_ADDRESS_POSTAL_CODE,
@@ -22,7 +22,7 @@ from sight_seeing_ms.utils.constants import (
     SIGHT_DESCRIPTION,
     SIGHT_NAME,
 )
-from sight_seeing_ms.utils.logger import CustomLogger
+from sightseeing_ms.utils.logger import CustomLogger
 
 logger = CustomLogger().get_logger()
 
