@@ -39,7 +39,7 @@ _clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
 
     [tool.poe.tasks.run-dev]
     help = "Run the app in development mode"
-    cmd = "streamlit run src/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
+    cmd = "streamlit run app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
 
     [tool.poe.tasks.dev-setup]
     help = "Setup the project for development"
