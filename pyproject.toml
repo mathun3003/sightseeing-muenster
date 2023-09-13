@@ -39,7 +39,7 @@ _clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
 
     [tool.poe.tasks.run-dev]
     help = "Run the app in development mode"
-    cmd = "streamlit run sightseeing_ms/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
+    cmd = "streamlit run src/app.py --server.runOnSave true --server.allowRunOnSave true --client.caching true"
 
     [tool.poe.tasks.dev-setup]
     help = "Setup the project for development"
@@ -47,31 +47,31 @@ _clean_docs.script = "shutil:rmtree('docs/_build', ignore_errors=1)"
 
     [tool.poe.tasks.typing]
     help = "Run MyPy checker on the code base"
-    cmd  = "mypy sightseeing_ms/"
+    cmd  = "mypy src/"
 
     [tool.poe.tasks.pep8]
     help = "Runs PEP8 (pycodestyle) checker on the code base"
-    cmd = "pycodestyle sightseeing_ms/ --max-line-length=120"
+    cmd = "pycodestyle src/ --max-line-length=120"
 
     [tool.poe.tasks.lint]
     help = "Run pylint"
-    cmd  = "pylint sightseeing_ms/"
+    cmd  = "pylint src/"
 
     [tool.poe.tasks.isort]
     help = "Sort imports. This affects the code base as this makes changes to affected files."
-    cmd = "isort sightseeing_ms/"
+    cmd = "isort src/"
 
     [tool.poe.tasks.black]
     help = "Format code using black. This affects the code base as this makes changes to affected files."
-    cmd = "black sightseeing_ms/"
+    cmd = "black src/"
 
     [tool.poe.tasks.style-black]
     help = "Validate black code style"
-    cmd  = "black sightseeing_ms/ --check --diff"
+    cmd  = "black src/ --check --diff"
 
     [tool.poe.tasks.style-isort]
     help = "Validate isort code style"
-    cmd  = "isort sightseeing_ms/ --check --diff"
+    cmd  = "isort src/ --check --diff"
 
     [tool.poe.tasks.style]
     help = "Validate code style"

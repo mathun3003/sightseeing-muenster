@@ -4,7 +4,7 @@ from typing import get_args
 import streamlit as st
 from translate import Translator
 
-from sightseeing_ms.utils.constants import LANGUAGES
+from src.utils.constants import LANGUAGES
 
 
 @st.cache_data()

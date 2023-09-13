@@ -19,6 +19,6 @@ LANGUAGES: Type[str] = Literal["de", "en", "nl"]  # type: ignore
 
 HTML_REGEX: Final[str] = r"<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});"
 
-RESOURCE_DIR: Final[Path] = Path("sightseeing_ms/resources")
+RESOURCE_DIR: Final[Path] = Path("src/resources")
 MODEL_SAVE_PATH: Final[Path] = RESOURCE_DIR / "pytorch_efficientnetv2s.pth"
 SIGHT_IDS_PATH: Final[Path] = RESOURCE_DIR / "sight_ids.json"

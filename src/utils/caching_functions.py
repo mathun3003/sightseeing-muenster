@@ -4,7 +4,7 @@ from os import PathLike
 
 import streamlit as st
 
-from sightseeing_ms.utils.constants import SIGHT_IDS_PATH
+from src.utils.constants import SIGHT_IDS_PATH
 
 
 @st.cache_data()

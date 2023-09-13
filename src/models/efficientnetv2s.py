@@ -7,7 +7,7 @@ from PIL import Image
 from torch import nn
 from torchvision import transforms
 
-from sightseeing_ms.utils.constants import MODEL_SAVE_PATH
+from src.utils.constants import MODEL_SAVE_PATH
 
 
 class EfficientNetV2S(nn.Module):
