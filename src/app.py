@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=import-error
 from typing import get_args
 
 import streamlit as st
 from PIL import Image
 
-from src.data.get_info import DataPortalMS
-from src.data.response_models import TouristInformationResponse
-from src.models.efficientnetv2s import EfficientNetV2S, transform
-from src.utils.caching_functions import load_sight_mapping
-from src.utils.constants import LANGUAGES
-from src.utils.translation import translate
+from data.get_info import DataPortalMS
+from data.response_models import TouristInformationResponse
+from models.efficientnetv2s import EfficientNetV2S, transform
+from utils.caching_functions import load_sight_mapping
+from utils.constants import LANGUAGES
+from utils.translation import translate
 
 
 class SightseeingApp:

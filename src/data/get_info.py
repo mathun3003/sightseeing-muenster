@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=import-error
 import os
 from typing import Optional
 
 import requests
 
-from src.data.response_models import (
+from data.response_models import (
     SightAddress,
     SightContactDetails,
     SightText,
     TouristInformationResponse,
 )
-from src.utils.constants import (
+from utils.constants import (
     SIGHT_ADDRESS,
     SIGHT_ADDRESS_HOUSE_NUMBER,
     SIGHT_ADDRESS_POSTAL_CODE,
@@ -22,7 +23,7 @@ from src.utils.constants import (
     SIGHT_DESCRIPTION,
     SIGHT_NAME,
 )
-from src.utils.logger import CustomLogger
+from utils.logger import CustomLogger
 
 logger = CustomLogger().get_logger()
 

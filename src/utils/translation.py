@@ -4,7 +4,7 @@ from typing import get_args
 import streamlit as st
 from translate import Translator
 
-from src.utils.constants import LANGUAGES
+from utils.constants import LANGUAGES  # pylint: disable=import-error
 
 
 @st.cache_data()

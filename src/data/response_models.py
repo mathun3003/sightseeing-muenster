@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from src.utils.constants import HTML_REGEX
+from utils.constants import HTML_REGEX  # pylint: disable=import-error
 
 
 class SightAddress(BaseModel):
