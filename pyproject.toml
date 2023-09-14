@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sight-seeing-ms"
+name = "sightseeing-ms"
 version = "0.1.0"
 description = "AI-powered Web App for tourists of the City of Münster."
 authors = ["Mathis <mathun3003@gmail.com>"]
@@ -11,11 +11,11 @@ poethepoet = "^0.22.1"
 translate = "^3.6.1"
 streamlit = "^1.26.0"
 pydantic = "^2.3.0"
-torch = "^2.0.1"
-torchvision = "^0.15.2"
+torch = ">=2.0.0, !=2.0.1"
+torchvision = "0.15.1, !=0.15.2"
+types-requests = "^2.31.0.2"
 poetry = {version = "^1.0", allow-prereleases = true, optional = true}
 bbid = {git = "https://github.com/ostrolucky/Bulk-Bing-Image-downloader", optional = true}
-types-requests = "^2.31.0.2"
 
 [tool.poetry.group.ci.dependencies]
 mypy = "^1.5.1"
