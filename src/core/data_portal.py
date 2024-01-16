@@ -52,7 +52,7 @@ class DataPortalMS:
         """
         url = f"https://www.datenportal-muensterland.de/api/v1/pois/{sight_id}"
         response = self._fetch(url, params={"append": "all_translations_grouped"} if self.language != "de" else None)
-        # get data from response
+        # get core from response
         tourist_information = response["data"]
         # get sight address
         sight_address = SightAddress(
