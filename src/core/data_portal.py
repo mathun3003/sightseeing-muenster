@@ -4,13 +4,13 @@ import os
 from typing import Optional
 
 import requests
-
 from data.response_models import (
     SightAddress,
     SightContactDetails,
     SightText,
     TouristInformationResponse,
 )
+
 from utils.constants import (
     SIGHT_ADDRESS,
     SIGHT_ADDRESS_HOUSE_NUMBER,
