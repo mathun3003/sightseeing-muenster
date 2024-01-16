@@ -1,5 +1,14 @@
 name: Code Style
-on: [push, pull_request, release]
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+  release:
+    branches:
+      - 'release/*'
 
 jobs:
 
@@ -7,39 +16,64 @@ jobs:
   typing:
     name: MyPy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.x
+          python-version: 3.11.0
           architecture: x64
           plugins : |
             pydantic.mypy
           ignore_missing_imports: true
       - name: "☁️ Checkout Repository"
         uses: actions/checkout@v3
-      - name: "📦 Install mypy"
-        run: pip install mypy
-      - name: "🔍 Run mypy"
-        uses: sasanquaneuf/mypy-github-action@releases/v1
+      - name: "Install poetry"
+        uses: snok/install-poetry@v1
         with:
-          checkName: 'typing'   # NOTE: this needs to be the same as the job name
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version: 1.3.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: "📦 Install dependencies"
+        run: |
+          poetry lock --no-update
+          poetry install --no-interaction --no-root --all-extras
+      - name: "🔍 Run mypy"
+        run: |
+          source $(poetry env info --path)/bin/activate
+          poe typing
 
   # Pep8
   pep8:
     name: PEP8
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11.0
+          architecture: x64
       - name: "☁️ Checkout Repository"
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: "🔍 Run PEP8"
-        uses: quentinguidee/pep8-action@v1
+      - name: "Install poetry"
+        uses: snok/install-poetry@v1
         with:
-          arguments: '--max-line-length=120'
+          version: 1.3.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: "📦 Install dependencies"
+        run: |
+          poetry lock --no-update
+          poetry install --no-interaction --no-root --all-extras
+      - name: "🔍 Run PEP8"
+        run: |
+          source $(poetry env info --path)/bin/activate
+          poe pep8
 
   # Pylint checking
   pylint:
@@ -49,7 +83,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: [ "3.10", "3.11" ]
+        python-version: [ "3.11" ]
     steps:
       - name: "☁️ Checkout Repository"
         uses: actions/checkout@v3
@@ -58,7 +92,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: "Install poetry"
-        uses: snok/install-poetry@v1.7.1
+        uses: snok/install-poetry@v1
         with:
           version: 1.3.2
           virtualenvs-create: true
@@ -66,22 +100,44 @@ jobs:
           installer-parallel: true
       - name: "📦 Install dependencies"
         run: |
-          poetry lock
-          poetry install --no-interaction --no-root
+          poetry lock --no-update
+          poetry install --no-interaction --no-root --all-extras
       - name: "🔍 Lint Code"
         run: |
-          poetry run pylint -d C0103,C0114,W1203,E0213,E1101 $(git ls-files '*.py')
-        # disable: invalid-name, missing-module-docstring, logging-fstring-interpolation, no-self-argument, no-member
+          source $(poetry env info --path)/bin/activate
+          poe lint
 
   # isort
   isort:
     name: isort
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: [ "3.11" ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: isort/isort-action@v1
+      - name: "☁️ Checkout Repository"
+        uses: actions/checkout@v3
+      - name: "🔧 Set up Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v3
         with:
-          requirements-files: "pyproject.toml"
+          python-version: ${{ matrix.python-version }}
+      - name: "Install poetry"
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.3.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: "📦 Install dependencies"
+        run: |
+          poetry lock --no-update
+          poetry install --no-interaction --no-root --all-extras
+      - name: "🔍 Run isort"
+        run: |
+          source $(poetry env info --path)/bin/activate
+          poe style-isort
 
   # Formatting
   black:
@@ -93,17 +149,21 @@ jobs:
       - name: "🔧 Autobuild"
         uses: actions/setup-python@v1
         with:
-          python-version: 3.x
+          python-version: 3.11
           line-length: 120
+          ignore_missing_imports: true
       - name: "Install poetry"
-        uses: snok/install-poetry@v1.7.1
+        uses: snok/install-poetry@v1
         with:
           version: 1.3.2
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
+      - name: "📦 Install dependencies"
+        run: |
+          poetry lock --no-update
+          poetry install --no-interaction --no-root --all-extras
       - name: "🔍 Run Black"
         run: |
-            poetry lock
-            poetry install --no-interaction --no-root
-            poetry run black --check --diff --verbose .
+            source $(poetry env info --path)/bin/activate
+            poe style-black
