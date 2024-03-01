@@ -5,10 +5,10 @@ from typing import get_args
 import streamlit as st
 from PIL import Image
 
+from core.constants import LANGUAGES
+from core.data_portal import DataPortalMS
 from core.models import TouristInformationResponse
 from ml_models.efficientnetv2s import EfficientNetV2S, transform
-from src.core.constants import LANGUAGES
-from src.core.data_portal import DataPortalMS
 from utils.functions import load_sight_mapping
 from utils.translation import translate
 
