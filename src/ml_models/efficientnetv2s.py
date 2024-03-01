@@ -7,7 +7,7 @@ from PIL import Image
 from torch import nn
 from torchvision import transforms
 
-from utils.constants import MODEL_SAVE_PATH  # pylint: disable=import-error
+from core.constants import MODEL_SAVE_PATH  # pylint: disable=import-error
 
 
 class EfficientNetV2S(nn.Module):

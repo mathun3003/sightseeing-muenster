@@ -4,14 +4,8 @@ import os
 from typing import Optional
 
 import requests
-from data.response_models import (
-    SightAddress,
-    SightContactDetails,
-    SightText,
-    TouristInformationResponse,
-)
 
-from utils.constants import (
+from core.constants import (
     SIGHT_ADDRESS,
     SIGHT_ADDRESS_HOUSE_NUMBER,
     SIGHT_ADDRESS_POSTAL_CODE,
@@ -23,9 +17,15 @@ from utils.constants import (
     SIGHT_DESCRIPTION,
     SIGHT_NAME,
 )
+from core.models import (
+    SightAddress,
+    SightContactDetails,
+    SightText,
+    TouristInformationResponse,
+)
 from utils.logger import CustomLogger
 
-logger = CustomLogger().get_logger()
+logger = CustomLogger().logger
 
 
 # pylint: disable=too-few-public-methods

@@ -10,16 +10,17 @@ class CustomLogger:
         Initializes the custom logger.
         """
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-        consoleHandler = logging.StreamHandler()
+        console_handler = logging.StreamHandler()
 
-        consoleHandler.setFormatter(formatter)
+        console_handler.setFormatter(formatter)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger.addHandler(consoleHandler)
+        self.log = logging.getLogger(__name__)
+        self.log.addHandler(console_handler)
 
-    def get_logger(self) -> logging.Logger:
+    @property
+    def logger(self) -> logging.Logger:
         """
         Get the custom logger instance.
         :return: logging.Logger instance.
         """
-        return self.logger
+        return self.log

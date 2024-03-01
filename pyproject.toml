@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sightseeing-ms"
-version = "0.1.0"
+version = "0.1.1"
 description = "AI-powered Web App for tourists of the City of Münster."
 authors = ["Mathis <mathun3003@gmail.com>"]
 readme = "README.md"

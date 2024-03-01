@@ -2,6 +2,7 @@
 from pathlib import Path
 from typing import Final, Literal, Type
 
+# sight related constants
 SIGHT_NAME: Final[str] = "name"
 SIGHT_DESCRIPTION: Final[str] = "description_text"
 
@@ -15,10 +16,13 @@ SIGHT_CONTACT_DETAILS_PHONE: Final[str] = "phone"
 SIGHT_CONTACT_DETAILS_EMAIL: Final[str] = "email"
 SIGHT_CONTACT_DETAILS_WEBSITE: Final[str] = "website"
 
+# available languages
 LANGUAGES: Type[str] = Literal["de", "en", "nl"]  # type: ignore
 
+# regex
 HTML_REGEX: Final[str] = r"<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});"
 
+# paths
 RESOURCE_DIR: Final[Path] = Path("src/resources")
 MODEL_SAVE_PATH: Final[Path] = RESOURCE_DIR / "pytorch_efficientnetv2s.pth"
 SIGHT_IDS_PATH: Final[Path] = RESOURCE_DIR / "sight_ids.json"

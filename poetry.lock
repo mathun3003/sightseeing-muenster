@@ -76,7 +76,7 @@ tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pyte
 name = "bbid"
 version = "1.0"
 description = "Script to download images from Bing search engine"
-optional = false
+optional = true
 python-versions = ">=3"
 files = []
 develop = false

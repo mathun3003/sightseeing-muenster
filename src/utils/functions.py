@@ -4,7 +4,7 @@ from os import PathLike
 
 import streamlit as st
 
-from utils.constants import SIGHT_IDS_PATH  # pylint: disable=import-error
+from core.constants import SIGHT_IDS_PATH  # pylint: disable=import-error
 
 
 @st.cache_data()
